@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: mysql-avangels-master-persistent-storage
+#  namespace: avangels
+  labels:
+    app: wordpress
+    tier: mysql
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/var/efs/atpl-worker-data-files/avangels/mysql"
+

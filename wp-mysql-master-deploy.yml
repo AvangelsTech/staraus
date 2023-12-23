@@ -1,0 +1,82 @@
+apiVersion:  apps/v1 # for versions before 1.9.0 use apps/v1beta2
+kind: StatefulSet
+metadata:
+  name: wordpress-mysql-master
+#  namespace: avangels
+  labels:
+    app: wordpress
+spec:
+  replicas: 1
+  serviceName: mysql
+  selector:
+    matchLabels:
+      app: wordpress
+      tier: mysql
+#  strategy:
+#    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: wordpress
+        tier: mysql
+    spec:
+
+#      affinity:
+#        nodeAffinity:
+#          requiredDuringSchedulingIgnoredDuringExecution:
+#            nodeSelectorTerms:
+#            - matchExpressions:
+#              - key: kubernetes.io/hostname
+#                operator: In
+#                values:
+#                - worker-node1
+
+      containers:
+      - image: mysql:5.7
+        name: mysql
+        args:  ["--max_allowed_packet","104857600" ,  "--max_error_count","1024"]
+#          - ["--max_error_count","1024"]
+#        args: ["--max_error_count","1024"]
+        resources:
+          requests:
+            memory: "400Mi"
+          limits:
+            memory: "800Mi"
+        env:
+        - name: MAX_ALLOWED_PACKET
+          value: "144777213"
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-pass        # the one generated before in secret.yml
+              key: password
+
+        readinessProbe:
+          exec:
+            command:
+            - sh
+            - -c
+            - "mysqladmin ping -u root -p${MYSQL_ROOT_PASSWORD}"
+          initialDelaySeconds: 5
+          periodSeconds: 2
+          timeoutSeconds: 1
+
+        ports:
+        - containerPort: 3306
+          name: mysql
+        volumeMounts:
+        - name: mysql-avangels-master-persistent-storage  # which data will be stored
+          mountPath: "/var/lib/mysql"
+#        - name: avangels-mysql-config
+#          mountPath: "/etc/mysql/conf.d"
+      volumes:
+      - name: mysql-avangels-master-persistent-storage    # PVC
+        persistentVolumeClaim:
+          claimName: mysql-avangels-master-persistent-storage
+#      - name: avangels-msql-config
+#        configMap:
+#          name: avangels-mysql-config
+#          items:
+#            - key: max_allowed_packet.cnf
+#              path: max_allowed_packet.cnf
+#        name: avangels-msql-config
