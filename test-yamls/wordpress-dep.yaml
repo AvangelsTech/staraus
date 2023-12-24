@@ -24,7 +24,7 @@ metadata:
   name: wordpress-efs
   namespace: staraus
 spec:
-  replicas: 2
+  replicas: 0
   selector:
     matchLabels:
       name: wordpress-efs
