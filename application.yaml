@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argocd-staraus
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/AvangelsTech/staraus.git
+    targetRevision: HEAD
+    path: test-yamls
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: staraus
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
