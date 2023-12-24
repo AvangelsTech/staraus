@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: wordpress-efs-pv
+  namespace: staraus
+spec:
+  capacity:
+    storage: 10Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteMany
+#  persistentVolumeReclaimPolicy: Retain
+#  storageClassName: efs-filesystem
+  hostPath:
+    path: "/var/efs/atpl-worker-data-files/staraus/html"
+
