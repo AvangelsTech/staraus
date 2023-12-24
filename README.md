@@ -1,2 +1,0 @@
-# staraus
-Staraus-repo
