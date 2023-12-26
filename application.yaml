@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: https://github.com/AvangelsTech/staraus.git
     targetRevision: HEAD
-    path: test-yamls
+    path: deployed-yaml-files
   destination:
     server: https://kubernetes.default.svc
     namespace: staraus
